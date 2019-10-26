@@ -55,6 +55,7 @@ Widget causas(String image, String causa, String info, int position) {
                       heroTag: "btn1",
                       child: Image.asset('assets/circle.png'),
                       backgroundColor: (position == 0)?Colors.white:corSecundaria,
+                      onPressed: () {},
                     ),
                   ),
                 ),
