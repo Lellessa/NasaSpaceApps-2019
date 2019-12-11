@@ -5,6 +5,7 @@ import 'package:space_apps2019_2/globals.dart' as globals;
 import 'package:space_apps2019_2/appBars.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 var corPrincipal = globals.corPrincipal;
 var corSecundaria = globals.corSecundaria;
@@ -31,7 +32,7 @@ Future teste(double lat, double lng, double seaLevel) async {
   print(seaLevel.toString());
 
   print('LAT|LNG');
-  return await 1;
+  return 1;
 }
 
 class _RelatorioScreenState extends State<RelatorioScreen> {
@@ -59,14 +60,214 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
         child: Column(
           children: <Widget>[
             FutureBuilder(
-              future: (info['opcao']=='userLocation')?getUserLocation():teste(this.info['lat'], this.info['lng'], this.info['seaLevel']),
+              future: (info['opcao']=='userLocation')?getUserLocation():getLatLng(this.info['lat'], this.info['lng']),
+              // teste(this.info['lat'], this.info['lng'], this.info['seaLevel']),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
-                  // case ConnectionState.none:
+                  case ConnectionState.none:
+                    return Text('None');
                   case ConnectionState.waiting:
-                    return Text("Espera Arrombaado");
+                    return Container(
+                      margin: EdgeInsets.only(top: 230.0),
+                      child: SpinKitRing(
+                        color: Colors.white,
+                        size: 50.0,
+                      ),
+                    );
                     break;
-                  case ConnectionState.done:
+                    case ConnectionState.done:
+                      if (snapshot.hasError) {
+                        return Container(
+                          child: Text(
+                            'Please, check your gps is active.\nAn error ocurred in ConnectionState.done',
+                            style: TextStyle(color: Colors.white, fontSize: 25.0),
+                          ),
+                        );
+                      } else {
+                        return Container(
+                          child: FutureBuilder(
+                            future: getAlt(snapshot.data['lat'], snapshot.data['lng'], info['seaLevel']),
+                            // future: getAlt(info['lat'], info['lng'], info['seaLevel']),
+                            // future: getAlt((info['opcao']=='userLocation')?snapshot.data['lat']:this.info['lat'], (info['opcao']=='LatLng')?snapshot.data['lng']:this.info['lng'], info['seaLevel']),
+                            builder: (context, snapshot2) {
+                              print('LATITUDE: '+snapshot.data['lat'].toString()+'\nLONGITUDE: '+snapshot.data['lng'].toString());
+                              switch (snapshot2.connectionState) {
+                                case ConnectionState.none:
+                                  return Text('Nenhum dado');
+                                  break;
+                                case ConnectionState.waiting:
+                                  return Container(
+                                    margin: EdgeInsets.only(top: 230.0),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Container(margin: EdgeInsets.only(bottom: 20.0), child: Text('Waiting', style: TextStyle(color: Colors.white, fontSize: 25.0),)),
+                                        SpinKitRing(
+                                          color: Colors.white,
+                                          size: 50.0,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                  break;
+                                case ConnectionState.done:
+                                  if (snapshot.hasError) {
+                                    return Container(
+                                      margin: EdgeInsets.only(top: 230.0),
+                                      child: Text('An Error Occurred!', style: TextStyle(fontSize: 23.0, color: Colors.white),),
+                                    );
+                                  }
+                                  
+                                  matrix = [];
+                                  for (int i = 0; i < 11; i++) {
+                                    linha = [];
+                                    for (int j = 0; j < 11; j++) {
+                                      // linha.add(Expanded(child: Text(snapshot2.data[i][j].toString(), textAlign: TextAlign.center, style: TextStyle(color: Colors.white),)));
+                                      linha.add(
+                                        Expanded(
+                                          child: Opacity(
+                                            opacity: (snapshot2.data[i][j] == 0)?0.5:0.0,
+                                            // opacity: 0.5,
+                                            child: Container(
+                                              color: Colors.blue,
+                                            ),
+                                          ),
+                                        )
+                                      );
+                                    }
+                                    matrix.add(linha.toList());
+                                    linha.clear();
+                                  }
+
+                                  return Container(
+                                    // height: 200.0,
+                                    child: Expanded(
+                                      child: Column(
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: Stack(
+                                              children: <Widget>[
+                                                Image.network('https://maps.googleapis.com/maps/api/staticmap?,NY&zoom=18&size=500x500&maptype=roadmap&markers=color:red|label:C|${snapshot.data['lat']},${snapshot.data['lng']}&key=AIzaSyBDJMFWbCoU9tAkMefeGJKGfafiHPoV8MI'),
+                                                Column(
+                                                  children: <Widget>[
+                                                    Expanded(
+                                                      child: Row(
+                                                        children: matrix[0],
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Row(
+                                                        children: matrix[1],
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Row(
+                                                        children: matrix[2],
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Row(
+                                                        children: matrix[3],
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Row(
+                                                        children: matrix[4],
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Row(
+                                                        children: matrix[5],
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Row(
+                                                        children: matrix[6],
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Row(
+                                                        children: matrix[7],
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Row(
+                                                        children: matrix[8],
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Row(
+                                                        children: matrix[9],
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Row(
+                                                        children: matrix[10],
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Row(
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+
+
+                                          Column(
+                                            children: <Widget>[
+                                              //! CONTAINER LAT LNG
+                                              Container(
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  children: <Widget>[
+                                                    Text('LAT: '+snapshot.data['lat'].toString(), style: TextStyle(color: Colors.white, fontSize: 20.0),),
+                                                    Text('LNG: '+snapshot.data['lng'].toString(), style: TextStyle(color: Colors.white, fontSize: 20.0),)
+                                                  ],
+                                                ),
+                                              ),
+
+                                              Container(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    //! CONTAINER SEA LEVEL TEXT
+                                                    Container(
+                                                      child: Text('SeaLevel: ${info['seaLevel'].toString()} meters', style: TextStyle(color: Colors.white, fontSize: 20.0),),
+                                                    ),
+                                                    
+                                                    //! CONTAINER AVERAGE HEIGHT
+                                                    Container(
+                                                      margin: EdgeInsets.symmetric(vertical: 5.0),
+                                                      child: Text('Average Height: ${average.toStringAsPrecision(5)} meters', style: TextStyle(color: Colors.white, fontSize: 20.0)),
+                                                    ),
+
+                                                    //! CONTAINER AVERAGE HEIGHT
+                                                    Container(
+                                                      child: Text('Suggested Year: ${start.toString()} years', style: TextStyle(color: Colors.white, fontSize: 20.0)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                  break;
+                                default:
+                              }
+                            },
+                          ),
+                        );
+                      }
+                      break;
+                    default:
+                      return Text('Default');
+                  /*case ConnectionState.done:
                     if (snapshot.hasError) {
                       return Text('Erro Cuzão');
                     }
@@ -218,7 +419,7 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
                       ),
                     );
                     break;
-                  default:
+                  default: */
                 }
               },
             ),
@@ -230,80 +431,89 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
   }
 }
 
-Future getUserLocation() async {
-  Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-  var _altura = position.altitude;
-  var _lat = position.latitude;
-  var _lng = position.longitude;
+  Future getUserLocation() async {
+    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    var _altura = position.altitude;
+    var _lat = position.latitude;
+    var _lng = position.longitude;
 
-  var map = {
-    'lat': _lat,
-    'lng': _lng
-  };
+    var map = {
+      'lat': _lat,
+      'lng': _lng
+    };
 
-  return map;
-}
-
- Future<List<List<int>>> getAlt(double lat, double lng, double seaLevel) async {
-
-  // String request = 'https://api.open-elevation.com/api/v1/lookup?locations=41.161758,-8.583933';
-  List<List<int>> matrix = [];
-  List<int> list = [];
-  double newLat;
-  double newLng;
-
-  print(lat);
-  print(lng);
-
-  double sum = 0;
-  int aux = 0;
-
-  String request2 = 'https://maps.googleapis.com/maps/api/staticmap?,NY&zoom=18&size=500x500&maptype=roadmap&markers=color:red|label:C|-20.9079171,-42.027304&key=AIzaSyBDJMFWbCoU9tAkMefeGJKGfafiHPoV8MI';
-  imageMapa = await http.get(request2);
-
-  for (int i = 5; i > -6; i--) {
-    list = [];
-    for (int j = -5; j < 6; j++) {
-      newLat = (lat + (i * 0.0006));
-      newLng = (lng + (j * 0.0006));
-
-      String request = 'https://maps.googleapis.com/maps/api/elevation/json?locations=${newLat.toString()},${newLng.toString()}&key=AIzaSyDuZD3f0LWsR4q2O0erzuvgkCMyCXKmmog';
-      // https://maps.googleapis.com/maps/api/staticmap?,NY&zoom=4&size=500x500&maptype=roadmap&markers=color:blue%7Clabel:S%7C-41.3372097,-21.756472&markers=color:green%7Clabel:G%-21.756472,-41.3372097&markers=color:red%7Clabel:C%7C-20.9079171,-42.027304&key=AIzaSyBDJMFWbCoU9tAkMefeGJKGfafiHPoV8MI
-      try {
-        var myJson = await http.get(request).timeout(Duration(seconds: 5));
-        var parsedJson = json.decode(myJson.body);
-
-        var altitude = parsedJson['results'][0]['elevation'];
-        // print(altitude.toString() + ' | ' + seaLevel.toString());
-        sum = sum + altitude;
-
-        if (altitude > seaLevel) {
-          list.add(1);
-          print('1');
-        } else {
-          list.add(0);
-          print('0');
-        }
-        // list.add(0);
-      } on TimeoutException catch (_) {
-        list.add(0);
-      } catch (e) {
-        list.add(0);
-      }
-      
-
-    }
-    matrix.add(list);
+    return map;
   }
 
-  //! CALCULATING THE AVERAGE HEIGHT
-  average = sum/121;
+  Future getLatLng(double _lat, double _lng) async {
+    var map = {
+      'lat': _lat,
+      'lng': _lng
+    };
 
-  //!CALCULATING THE SUGGESTED YEARS TO SUBMERGE PART OF THE AREA
-  start = (average~/0.004);
+    return map;
+  }
 
-  return matrix;
-}
+  Future<List<List<int>>> getAlt(double lat, double lng, double seaLevel) async {
+
+    // String request = 'https://api.open-elevation.com/api/v1/lookup?locations=41.161758,-8.583933';
+    List<List<int>> matrix = [];
+    List<int> list = [];
+    double newLat;
+    double newLng;
+
+    // print(lat);
+    // print(lng);
+
+    double sum = 0;
+    int aux = 0;
+
+    // String request2 = 'https://maps.googleapis.com/maps/api/staticmap?,NY&zoom=18&size=500x500&maptype=roadmap&markers=color:red|label:C|-20.9079171,-42.027304&key=AIzaSyBDJMFWbCoU9tAkMefeGJKGfafiHPoV8MI';
+    // imageMapa = await http.get(request2);
+
+    for (int i = 5; i > -6; i--) {
+      list = [];
+      for (int j = -5; j < 6; j++) {
+        newLat = (lat + (i * 0.0006));
+        newLng = (lng + (j * 0.0006));
+
+        String request = 'https://maps.googleapis.com/maps/api/elevation/json?locations=${newLat.toString()},${newLng.toString()}&key=AIzaSyDuZD3f0LWsR4q2O0erzuvgkCMyCXKmmog';
+        // https://maps.googleapis.com/maps/api/staticmap?,NY&zoom=4&size=500x500&maptype=roadmap&markers=color:blue%7Clabel:S%7C-41.3372097,-21.756472&markers=color:green%7Clabel:G%-21.756472,-41.3372097&markers=color:red%7Clabel:C%7C-20.9079171,-42.027304&key=AIzaSyBDJMFWbCoU9tAkMefeGJKGfafiHPoV8MI
+        try {
+          var myJson = await http.get(request).timeout(Duration(seconds: 5));
+          var parsedJson = json.decode(myJson.body);
+
+          var altitude = parsedJson['results'][0]['elevation'];
+          // print(altitude.toString() + ' | ' + seaLevel.toString());
+          sum = sum + altitude;
+
+          if (altitude > seaLevel) {
+            list.add(1);
+            print('1');
+          } else {
+            list.add(0);
+            print('0');
+          }
+          // list.add(0);
+        } on TimeoutException catch (_) {
+          list.add(0);
+        } catch (e) {
+          list.add(0);
+        }
+        
+
+      }
+      matrix.add(list);
+    }
+
+    //! CALCULATING THE AVERAGE HEIGHT
+    average = sum/121;
+
+    //!CALCULATING THE SUGGESTED YEARS TO SUBMERGE PART OF THE AREA
+    start = (average~/0.004);
+
+    return matrix;
+  }
 
 
 
