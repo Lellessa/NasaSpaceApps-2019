@@ -84,6 +84,7 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
                           ),
                         );
                       } else {
+                        print('SNAPSHOT| LAT: '+snapshot.data['lat'].toString() + ', LNG: '+snapshot.data['lng'].toString() + ', Nivel do Mar: '+ info['seaLevel'].toString());
                         return Container(
                           child: FutureBuilder(
                             future: getAlt(snapshot.data['lat'], snapshot.data['lng'], info['seaLevel']),
@@ -484,7 +485,7 @@ class _RelatorioScreenState extends State<RelatorioScreen> {
           var parsedJson = json.decode(myJson.body);
 
           var altitude = parsedJson['results'][0]['elevation'];
-          // print(altitude.toString() + ' | ' + seaLevel.toString());
+          print(altitude.toString() + ' | ' + seaLevel.toString());
           sum = sum + altitude;
 
           if (altitude > seaLevel) {

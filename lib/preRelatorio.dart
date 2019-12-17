@@ -70,8 +70,8 @@ class _PreRelatorioState extends State<PreRelatorio> {
                   labelStyle: TextStyle(color: Colors.white, fontSize: 23.0),
                 ),
                 onChanged: (value) {
-                  // _seaLevel = double.parse(value)*0.004;
-                  _seaLevel = double.parse(value);
+                  _seaLevel = double.parse(value)*0.004;
+                  // _seaLevel = double.parse(value);
                   if (value.length==0) {
                     print('ok = false');
                     ok = false;

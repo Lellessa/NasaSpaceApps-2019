@@ -7,6 +7,8 @@ import 'package:space_apps2019_2/solucao.dart';
 import 'package:space_apps2019_2/previsão.dart';
 import 'package:space_apps2019_2/globals.dart' as globals;
 
+//Alpha Version
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
