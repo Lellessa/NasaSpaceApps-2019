@@ -7,4 +7,5 @@ The SeeRise app helps people visualize the consequences of sea level rise and ex
 Our page on NASA Space Apps Challenge 2019:
 - [SEERISE - SEE HOW THE SEA LEVEL RISES](https://2019.spaceappschallenge.org/challenges/earths-oceans/rising-water/teams/rising-tide/project)
 
+### Screenshot
 ![App Screenshot](https://github.com/Lellessa/NasaSpaceApps-2019/blob/master/assets/seeRise_screenshot.png)
